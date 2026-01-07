@@ -1,0 +1,46 @@
+.update-task-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  background-color: #f9f9f9;
+}
+
+.update-task-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.update-task-form input,
+.update-task-form textarea,
+.update-task-form select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.update-task-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.update-btn {
+  background-color: #2563eb;
+  color: white;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.3s;
+}
+
+.update-btn:hover {
+  background-color: #1d4ed8;
+}

@@ -1,0 +1,145 @@
+Container
+.task-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header + button */
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.task-header h2 {
+  font-size: 28px;
+  color: #333;
+  font-weight: bold;
+}
+
+.create-task-btn {
+  background-color: #1e40af;
+  color: white;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.create-task-btn:hover {
+  background-color: #1e3a8a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Task Grid */
+.task-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .task-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .task-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Task Card */
+.task-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 15px;
+  background-color: #fff;
+  transition: all 0.3s ease;
+}
+
+.task-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.task-card h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #111;
+}
+
+.task-card p {
+  color: #555;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+/* Status badges */
+.status {
+  font-weight: 600;
+}
+
+.status.completed {
+  color: #16a34a;
+}
+
+.status.pending {
+  color: #eab308;
+}
+
+.status.in-progress {
+  color: #3b82f6;
+}
+
+/* Loading / error / empty */
+.task-loading,
+.task-error,
+.task-empty {
+  font-size: 16px;
+  color: #555;
+  text-align: center;
+  margin-top: 20px;
+}
+/* Task card actions */
+.task-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+/* Edit button */
+.edit-btn {
+  background-color: #2563eb;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.edit-btn:hover {
+  background-color: #1d4ed8;
+}
+
+/* Delete button */
+.delete-btn {
+  background-color: #dc2626;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.delete-btn:hover {
+  background-color: #b91c1c;
+}
