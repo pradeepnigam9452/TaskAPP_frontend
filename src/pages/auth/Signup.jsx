@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
 import api from "../../api.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate  , Link} from "react-router-dom";
 function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
