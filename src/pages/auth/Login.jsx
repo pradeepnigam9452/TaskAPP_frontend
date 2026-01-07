@@ -3,43 +3,39 @@ import Navbar from "../Navbar";
 import { useNavigate,Link } from "react-router-dom";
 import Signup from "./Signup";
 import Footer from "../Footer";
+import api from "../../api.js" // this is my api .js
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
    const navigate = useNavigate();
+
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const response = await fetch("http://localhost:5000/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
+  try {
+    const response = await api.post("/users/login", {
+      email,
+      password,
+    });
 
-      const data = await response.json();
+    const data = response.data;
 
-      if (response.ok) {
-        setMessage("Login successful!");
-        // console.log("Server response:", data);
+    setMessage("Login successful!");
+    localStorage.setItem("token", data.token);
+    navigate("/");
+  } catch (error) {
+    console.error("Login error:", error);
 
-        // Example: save token
-        localStorage.setItem("token", data.token);
-        navigate("/");
-      } else {
-        setMessage(data.message || "Login failed");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setMessage("Server error");
+    if (error.response && error.response.data) {
+      setMessage(error.response.data.message || "Invalid credentials");
+    } else {
+      setMessage("Server error. Please try again later.");
     }
-  };
+  }
+};
+
 
   return (
     <> <Navbar/> 
@@ -107,3 +103,5 @@ const styles = {
 };
 
 export default Login;
+
+

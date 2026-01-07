@@ -1,36 +1,28 @@
 import React, { useState } from "react";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
+import api from "../../api.js";
+import { useNavigate } from "react-router-dom";
 function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-
+   const navigate = useNavigate(); //
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const response = await fetch("http://localhost:5000/users/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-        }),
-      });
-
-      const data = await response.json();
-
+ 
+     try {
+    const response = await api.post("/users/signup", {
+      name,
+      email,
+      password,
+    });
+      const data =  response.data;
       if (response.ok) {
         setMessage("Signup successful!");
         console.log("Server response:", data);
-
-        // Example redirect after signup
-         window.location.href = "/login";
+         navigate("/login");
       } else {
         setMessage(data.message || "Signup failed");
       }
@@ -78,6 +70,11 @@ function Signup() {
         </button>
 
         {message && <p>{message}</p>}
+
+       <p>
+  Already have an account? <a href="/login">Login here</a>
+</p>
+
       </form>
     </div>
     <Footer/>

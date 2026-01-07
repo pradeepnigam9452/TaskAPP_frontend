@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar";
-import Footer from '../Footer'
+import Footer from "../Footer";
 import "./CreateTask.css";
+import api from "../../api.js";
 
 const CreateTask = () => {
   const [tasks, setTasks] = useState([]);
@@ -17,9 +17,10 @@ const CreateTask = () => {
   const [status, setStatus] = useState("pending");
 
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
 
+  // 🔐 Auth check + fetch tasks
   useEffect(() => {
+    const token = localStorage.getItem("token");
     if (!token) {
       navigate("/login");
       return;
@@ -27,9 +28,7 @@ const CreateTask = () => {
 
     const fetchTasks = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/tasks", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get("/api/tasks");
         setTasks(res.data);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch tasks");
@@ -39,17 +38,24 @@ const CreateTask = () => {
     };
 
     fetchTasks();
-  }, [navigate, token]);
+  }, [navigate]);
 
+  // ➕ Add new task
   const handleAddTask = async (e) => {
     e.preventDefault();
+
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/tasks",
-        { title, description, dueDate, priority, status },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setTasks([...tasks, res.data]);
+      const res = await api.post("/api/tasks", {
+        title,
+        description,
+        dueDate,
+        priority,
+        status,
+      });
+
+      setTasks((prev) => [...prev, res.data]);
+
+      // reset form
       setTitle("");
       setDescription("");
       setDueDate("");
@@ -63,11 +69,14 @@ const CreateTask = () => {
   return (
     <>
       <Navbar />
+
       <div className="task-container">
         <h2>My Tasks</h2>
 
+        {/* Add Task Form */}
         <form onSubmit={handleAddTask} className="task-form">
           <h3>Add New Task</h3>
+
           <input
             type="text"
             placeholder="Title"
@@ -75,43 +84,44 @@ const CreateTask = () => {
             onChange={(e) => setTitle(e.target.value)}
             required
           />
+
           <textarea
             placeholder="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
           />
+
           <input
             type="date"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
             required
           />
-          <select
-            value={priority}
-            onChange={(e) => setPriority(e.target.value)}
-          >
+
+          <select value={priority} onChange={(e) => setPriority(e.target.value)}>
             <option value="low">Low</option>
             <option value="medium">Medium</option>
             <option value="high">High</option>
           </select>
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
+
+          <select value={status} onChange={(e) => setStatus(e.target.value)}>
             <option value="pending">Pending</option>
             <option value="in-progress">In Progress</option>
             <option value="completed">Completed</option>
           </select>
+
           <button type="submit">Add Task</button>
         </form>
 
+        {/* States */}
         {loading && <p className="task-loading">Loading tasks...</p>}
         {error && <p className="task-error">{error}</p>}
         {!loading && tasks.length === 0 && (
           <p className="task-empty">You have no tasks yet.</p>
         )}
 
+        {/* Task List */}
         <div className="task-grid">
           {tasks.map((task) => (
             <div key={task._id} className="task-card">
@@ -136,7 +146,8 @@ const CreateTask = () => {
           ))}
         </div>
       </div>
-      <Footer/>
+
+      <Footer />
     </>
   );
 };

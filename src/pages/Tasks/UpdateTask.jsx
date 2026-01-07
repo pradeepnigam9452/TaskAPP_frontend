@@ -1,14 +1,15 @@
+
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../Navbar";
-import "./UpdateTask.css";
 import Footer from "../Footer";
-
+import api from "../../api"; // axios instance with baseURL and token
+import "./UpdateTask.css";
 
 const UpdateTask = () => {
   const { id } = useParams(); // get task id from URL
   const navigate = useNavigate();
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -27,12 +28,9 @@ const UpdateTask = () => {
       return;
     }
 
-    // Fetch task details
     const fetchTask = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/tasks`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get("/api/tasks"); // uses baseURL from api.js
         const task = res.data.find((t) => t._id === id);
         if (!task) {
           setError("Task not found");
@@ -56,11 +54,13 @@ const UpdateTask = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(
-        `http://localhost:5000/api/tasks/${id}`,
-        { title, description, dueDate, priority, status },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.put(`/api/tasks/${id}`, {
+        title,
+        description,
+        dueDate,
+        priority,
+        status,
+      });
       alert("Task updated successfully!");
       navigate("/showTask"); // redirect to task list
     } catch (err) {
@@ -111,7 +111,7 @@ const UpdateTask = () => {
           </button>
         </form>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };

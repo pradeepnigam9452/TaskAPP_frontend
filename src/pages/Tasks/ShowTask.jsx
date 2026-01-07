@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
+import api from "../../api.js";
 import "./ShowTask.css";
 
 const ShowTask = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("token");
-
+  // 🔐 Auth check + fetch tasks
   useEffect(() => {
+    const token = localStorage.getItem("token");
     if (!token) {
       navigate("/login");
       return;
@@ -21,9 +22,7 @@ const ShowTask = () => {
 
     const fetchTasks = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/tasks", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get("/api/tasks");
         setTasks(res.data);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch tasks");
@@ -33,15 +32,15 @@ const ShowTask = () => {
     };
 
     fetchTasks();
-  }, [navigate, token]);
+  }, [navigate]);
 
+  // 🗑️ Delete task
   const handleDelete = async (taskId) => {
     if (!window.confirm("Are you sure you want to delete this task?")) return;
+
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${taskId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setTasks(tasks.filter((task) => task._id !== taskId));
+      await api.delete(`/api/tasks/${taskId}`);
+      setTasks((prev) => prev.filter((task) => task._id !== taskId));
     } catch (err) {
       alert(err.response?.data?.message || "Failed to delete task");
     }
@@ -50,6 +49,7 @@ const ShowTask = () => {
   return (
     <>
       <Navbar />
+
       <div className="task-container">
         <div className="task-header">
           <h2>My Tasks</h2>
@@ -69,7 +69,10 @@ const ShowTask = () => {
             <div key={task._id} className="task-card">
               <h3>{task.title}</h3>
               <p>{task.description}</p>
-              <p>Due: {new Date(task.dueDate).toLocaleDateString()}</p>
+              <p>
+                Due: {new Date(task.dueDate).toLocaleDateString()}
+              </p>
+
               <p className="status">
                 Status:{" "}
                 <span
@@ -86,11 +89,13 @@ const ShowTask = () => {
               </p>
 
               <div className="task-actions">
-                <Link to={`/updateTask/${task._id}`} className="edit-btn">
+                <Link
+                  to={`/updateTask/${task._id}`}
+                  className="edit-btn"
+                >
                   Edit
                 </Link>
 
-             
                 <button
                   onClick={() => handleDelete(task._id)}
                   className="delete-btn"
@@ -102,7 +107,8 @@ const ShowTask = () => {
           ))}
         </div>
       </div>
-      <Footer/>
+
+      <Footer />
     </>
   );
 };
